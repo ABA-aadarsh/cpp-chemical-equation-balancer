@@ -43,8 +43,9 @@ int uniqueElementsCount (string & expr){
     char c;
     for(int i=0; i<expr.length(); i++){
         buff="";
-        if(isalpha(expr[i]) && isupper(expr[i])){
-            buff+=expr[i];
+        c = expr[i];
+        if(isalpha(c) && isupper(c)){
+            buff+=c;
             i++;
             if(i == expr.length()) break;
             c = expr[i];
@@ -59,6 +60,9 @@ int uniqueElementsCount (string & expr){
         }else{
             continue;
         }
+    }
+    if(buff!=""){
+        elements.insert(buff);
     }
     return elements.size();
 }
@@ -138,11 +142,11 @@ int main() {
     reactant_s = expr_s.substr(0, expr_separator);
     product_s = expr_s.substr(expr_separator + 2);
 
-    // if (uniqueElementsCount(reactant_s) != uniqueElementsCount(product_s)) {
-    //     cerr << "\nInvalid expression. No of different elements on reactant does "
-    //             "not match with that in product side\n";
-    //     return EXIT_FAILURE;
-    // }
+    if (uniqueElementsCount(reactant_s) != uniqueElementsCount(product_s)) {
+        cerr << "\nInvalid expression. No of different elements on reactant does "
+                "not match with that in product side\n";
+        return EXIT_FAILURE;
+    }
     elementSet = uniqueElements(reactant_s);
     n = elementSet.size();
     elementMapInitialise(elementSet, elementMap);
@@ -160,9 +164,6 @@ int main() {
     }
     int tableItr =0;
     int temp[n];
-    // for(auto x=elementMap.begin(); x!=elementMap.end(); x++){
-    //     cout << x->first<< " : " << x->second << endl;
-    // }
     for(int i=0; i<reactants_list.size(); i++){
         for(int j=0; j<n; j++){temp[j]=0;}
         compoundTuple(reactants_list[i], temp, elementMap);
@@ -179,13 +180,6 @@ int main() {
         }
         tableItr++;
     }
-    // cout << "Table n="<<n<<"\n";
-    // for(int i =0; i<n; i++){
-    //     for(int j=0; j<reactants_list.size()+product_list.size(); j++){
-    //         cout << table[i][j] << " ";
-    //     }
-    //     cout << endl;
-    // }
     float *soln = new float[c];
     solver(table, soln, n, c);
     int counter  = 0;

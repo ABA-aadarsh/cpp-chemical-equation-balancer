@@ -87,12 +87,6 @@ int nonFloaty2 (float l[], int r){
 
 void solver(float **table, float soln[], int r, int c){
     int tempInt, pivotColumn;
-    // for(int i =0; i<r; i++){
-    //     for(int j=0; j<c; j++){
-    //         cout << table[i][j] << " ";
-    //     }
-    //     cout << endl;
-    // }
     float tempFloat, pivotValue, lastColumn[r];
     // displayTable(table, r, c);
     if(table[0][0]==0){
@@ -106,19 +100,6 @@ void solver(float **table, float soln[], int r, int c){
         // displayTable(table, r, c);
     }
     for(int i =0; i<r; i++){
-        // pivotColumn=findPivotColumn(i, table, r, c);
-        // if(pivotColumn==-1){
-        //     for(int it=i+1; it<r; it++){
-        //         if(table[it][0]!=0){
-        //             tempInt=it;
-        //             break;
-        //         }
-        //     }
-        //     swapRows(i, tempInt, table, r, c);
-        //     displayTable(table, r, c);
-        //     i--;
-        //     continue;
-        // }
         pivotColumn = i;
         if(table[i][i]==0){
             tempInt=-1;
@@ -146,13 +127,6 @@ void solver(float **table, float soln[], int r, int c){
             // displayTable(table, r, c);
         }
     }
-    // for(int i =0; i<r; i++){
-    //     for(int j=0; j<c; j++){
-    //         cout << table[i][j] << "   ";
-    //     }
-    //     cout << endl;
-    // }
-
     // displayTable(table, r, c);
     for(int i=0; i<r; i++){
         lastColumn[i] = table[i][c-1];
@@ -172,8 +146,4 @@ void solver(float **table, float soln[], int r, int c){
     for(int i=0; i<c;i++){
         soln[i] /= g;
     }
-    // cout << "Solution: " << endl;
-    // for(int i=0; i<c; i++){
-    //     cout << soln[i] << endl;
-    // }
 }
