@@ -104,23 +104,28 @@ void elementMapInitialise(set<string> &elementSet, map<string, int> &elementMap)
     }
 }
 void compoundTuple(string const & compd, int arr[], map<string, int> & elementMap){
-    set<string> el = uniqueElements(compd);
-    int i, j;
-    string buff;
-    for(auto itr=el.begin(), citr=el.begin(); itr!=el.end(); itr++){
-        i = compd.find(*itr) + (*itr).length();
-        if(isalpha(compd[i])|| i==compd.length()){
-            arr[elementMap[*itr]] = 1;
-            continue;
-        }
-        citr = next(itr);
-        if(citr!=el.end()) {
-            j = compd.find(*citr);
-            buff = compd.substr(i,j-1);
-            arr[elementMap[*itr]] = stoi(buff);
-        }else{
-            buff = compd.substr(i, compd.length()-1);
-            arr[elementMap[*itr]] = stoi(buff);
+    char ch;
+    string digitBuff, elementBuff;
+    for(int i=0; i<compd.length(); i++){
+        digitBuff = "";
+        elementBuff = "";
+        ch = compd[i];
+        if(isalpha(ch) && isupper(ch)){
+            elementBuff+=ch;
+            ch = compd[++i];
+            while(isalpha(ch) && islower(ch)){
+                elementBuff+=ch;
+                ch = compd[++i];
+            }
+            while (isdigit(ch)) {
+                digitBuff += ch;
+                ch = compd[++i];
+            }
+            if(digitBuff==""){
+                digitBuff="1";
+            }
+            arr[elementMap[elementBuff]]+=stoi(digitBuff);
+            i--;
         }
     }
 }

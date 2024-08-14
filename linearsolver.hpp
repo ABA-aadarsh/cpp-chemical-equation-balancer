@@ -4,7 +4,7 @@
 #include<iostream>
 using namespace std;
 
-int findPivotColumn(int row, float ** table, int r, int c){
+inline int findPivotColumn(int row, float ** table, int r, int c){
     int pivotColumn=-1;
     for(int i=0; i<c; i++){
         if(table[row][i]!=0){
@@ -15,7 +15,7 @@ int findPivotColumn(int row, float ** table, int r, int c){
     }
     return pivotColumn;
 }
-void displayTable(float **table, int r, int c){
+inline void displayTable(float **table, int r, int c){
     cout << "\nTS..........\n";
     for(int i=0; i<r; i++){
         for(int j=0; j<c; j++){
@@ -25,7 +25,7 @@ void displayTable(float **table, int r, int c){
     }
     cout << "\nTE............\n";
 }
-void swapRows (int r1, int r2, float ** table, int r, int c){
+inline void swapRows (int r1, int r2, float ** table, int r, int c){
     float temp;
     for(int i =0; i<c; i++){
         temp = table[r1][i];
@@ -33,18 +33,18 @@ void swapRows (int r1, int r2, float ** table, int r, int c){
         table[r2][i] = temp;
     }
 }
-void divideRowByValue(int row, float value, float **table, int r, int c){
+inline void divideRowByValue(int row, float value, float **table, int r, int c){
     for(int i=0; i<c; i++){
         table[row][i] /= value;
     }
 }
-void reduceRowByFactor(int row, int factorRow, float factor, float **table, int r, int c){
+inline void reduceRowByFactor(int row, int factorRow, float factor, float **table, int r, int c){
     // row -> row - factor * factorRow;
     for(int i =0; i<c; i++){
         table[row][i] -= factor * table[factorRow][i];
     }
 }
-int gcd(int a, int b) {
+inline int gcd(int a, int b) {
     while (b != 0) {
         int temp = b;
         b = a % b;
@@ -53,26 +53,10 @@ int gcd(int a, int b) {
     return a;
 }
 
-int lcm(int a, int b) {
+inline int lcm(int a, int b) {
     return (a / gcd(a, b)) * b;
 }
-
-int notFloaty(float l[], int r) {
-    int k = 1;
-    float number = 0;
-    for (int i =0; i< r; i++) {
-        number = std::abs(l[i]);
-        int denominator = 1;
-        while (std::fmod(number * denominator, 1.0) != 0.0) {
-            denominator *= 2;
-        }
-        k = lcm(k, denominator);
-    }
-
-    return k;
-}
-
-int nonFloaty2 (float l[], int r){
+inline int nonFloaty2 (float l[], int r){
     int soln=1;
     for(int i =0; i<r; i++){
         if(abs(l[i])<1){
@@ -85,9 +69,9 @@ int nonFloaty2 (float l[], int r){
     return soln;
 }
 
-void solver(float **table, float soln[], int r, int c){
+inline void solver(float **table, float soln[], int r, int c){
     int tempInt, pivotColumn;
-    float tempFloat, pivotValue, lastColumn[r];
+    float tempFloat, pivotValue, lastColumn[c-1];
     // displayTable(table, r, c);
     if(table[0][0]==0){
         for(int i=1; i<r; i++){
@@ -99,7 +83,7 @@ void solver(float **table, float soln[], int r, int c){
         swapRows(0, tempInt, table, r, c);
         // displayTable(table, r, c);
     }
-    for(int i =0; i<r; i++){
+    for(int i =0; i<c-1; i++){
         pivotColumn = i;
         if(table[i][i]==0){
             tempInt=-1;
@@ -111,6 +95,7 @@ void solver(float **table, float soln[], int r, int c){
                 }
             }
             if(tempInt==-1){
+                displayTable(table, r, c);
                 cerr << "Cant Solve this equation\n";
                 break;
             }else{
@@ -128,16 +113,13 @@ void solver(float **table, float soln[], int r, int c){
         }
     }
     // displayTable(table, r, c);
-    for(int i=0; i<r; i++){
+    for(int i=0; i<c-1; i++){
         lastColumn[i] = table[i][c-1];
     }
-    int f = nonFloaty2(lastColumn, r);
+    int f = nonFloaty2(lastColumn, c-1);
     soln[c-1] = f;
-    for(int i=r-1; i>=0; i--){
-        soln[i] = 0;
-        for(int j=i+1; j<c; j++){
-            soln[i] += -soln[j] * table[i][j];
-        }
+    for(int i=0; i<c-1; i++){
+        soln[i] = -lastColumn[i]*f;
     }
     int g = soln[0];
     for(int i=1; i<c; i++){
@@ -147,3 +129,6 @@ void solver(float **table, float soln[], int r, int c){
         soln[i] /= g;
     }
 }
+
+
+// NH4OH + KAlS2O8H24O12 -> AlO3H3 + N2H8SO4 + KOH + H2O
