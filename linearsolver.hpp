@@ -72,7 +72,7 @@ inline int nonFloaty2 (float l[], int r){
 inline void solver(float **table, float soln[], int r, int c){
     int tempInt, pivotColumn;
     float tempFloat, pivotValue, lastColumn[c-1];
-    // displayTable(table, r, c);
+    displayTable(table, r, c);
     if(table[0][0]==0){
         for(int i=1; i<r; i++){
             if(table[i][0]!=0){

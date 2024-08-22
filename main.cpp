@@ -1,7 +1,6 @@
 #include <cctype>
 #include <cstdlib>
 #include<iostream>
-#include <iterator>
 #include <set>
 #include <string>
 #include<vector>
@@ -83,7 +82,7 @@ void compoundsList (string & expr, vector<string>& compoundsL){
         ch = expr[i];
         if(buff.empty() && isalpha(ch) && isupper(ch)){
             buff+=ch;
-        }else if(!buff.empty() && (isalpha(ch) || isdigit(ch))){
+        }else if(!buff.empty() && (isalpha(ch) || isdigit(ch) || ch=='.' || ch=='(' || ch==')')){
             buff+=ch;
         }else{
             if(!buff.empty()){
@@ -106,6 +105,7 @@ void elementMapInitialise(set<string> &elementSet, map<string, int> &elementMap)
 void compoundTuple(string const & compd, int arr[], map<string, int> & elementMap){
     char ch;
     string digitBuff, elementBuff;
+    int factor=1;
     for(int i=0; i<compd.length(); i++){
         digitBuff = "";
         elementBuff = "";
@@ -124,8 +124,27 @@ void compoundTuple(string const & compd, int arr[], map<string, int> & elementMa
             if(digitBuff==""){
                 digitBuff="1";
             }
-            arr[elementMap[elementBuff]]+=stoi(digitBuff);
+            arr[elementMap[elementBuff]]+=factor*stoi(digitBuff);
             i--;
+        }else if(ch=='('){
+            int j = compd.find(')');
+            string tempBuff;
+            if(j==-1){
+                cerr << "Compound : " <<  compd << " has missing closing bracket ')'\n" << endl;
+                break;
+            }
+            if(isdigit(compd[j+1])){
+                ch = compd[++j];
+                while(isdigit(ch) && ch!='\0'){
+                    tempBuff+=ch;
+                    ch = compd[++j];
+                }
+                factor = stoi(tempBuff);
+            }else{
+                factor=1;
+            }
+        }else if(ch==')'){
+            factor=1;
         }
     }
 }
@@ -169,6 +188,7 @@ int main() {
     }
     int tableItr =0;
     int temp[n];
+    float *soln = new float[c];
     for(int i=0; i<reactants_list.size(); i++){
         for(int j=0; j<n; j++){temp[j]=0;}
         compoundTuple(reactants_list[i], temp, elementMap);
@@ -185,7 +205,6 @@ int main() {
         }
         tableItr++;
     }
-    float *soln = new float[c];
     solver(table, soln, n, c);
     int counter  = 0;
     for(int i =0; i<reactants_list.size(); i++){
