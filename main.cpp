@@ -205,7 +205,16 @@ int main() {
         }
         tableItr++;
     }
-    solver(table, soln, n, c);
+    int solutionstatus = solver(table, soln, n, c);
+    if(solutionstatus==SOLN_STATUS::UNSOLVED){
+        cout << "This Chemical Equation couldn't be solved" << endl;
+        delete []soln;
+        for (int i = 0; i < n; ++i) {
+            delete[] table[i];
+        }
+        delete []table;
+        return EXIT_FAILURE;
+    }
     int counter  = 0;
     for(int i =0; i<reactants_list.size(); i++){
         cout << "("<<soln[counter] << ") " << reactants_list[i];

@@ -69,25 +69,19 @@ inline int nonFloaty2 (float l[], int r){
     return soln;
 }
 
-inline void solver(float **table, float soln[], int r, int c){
+namespace SOLN_STATUS {
+    int SOLVED = 1;
+    int UNSOLVED = 0;
+}
+
+inline int solver(float **table, float soln[], int r, int c){
+    // returns 1 if solved else returns 0, modifies soln and table array
     int tempInt, pivotColumn;
     float tempFloat, pivotValue, lastColumn[c-1];
-    displayTable(table, r, c);
-    if(table[0][0]==0){
-        for(int i=1; i<r; i++){
-            if(table[i][0]!=0){
-                tempInt=i;
-                break;
-            }
-        }
-        swapRows(0, tempInt, table, r, c);
-        // displayTable(table, r, c);
-    }
     for(int i =0; i<c-1; i++){
         pivotColumn = i;
         if(table[i][i]==0){
             tempInt=-1;
-            // cout << "i = " << i << " table[i][i] = "<< table[i][i] << endl;
             for(int it = i+1; it<r;it++){
                 if(table[it][i]!=0){
                     tempInt=it;
@@ -95,9 +89,9 @@ inline void solver(float **table, float soln[], int r, int c){
                 }
             }
             if(tempInt==-1){
-                displayTable(table, r, c);
-                cerr << "Cant Solve this equation\n";
-                break;
+                // displayTable(table, r, c);
+                cerr << "Error: Pivots Not Available\n";
+                return SOLN_STATUS::UNSOLVED;
             }else{
                 swapRows(i, tempInt, table, r, c);
             }
@@ -106,10 +100,23 @@ inline void solver(float **table, float soln[], int r, int c){
         divideRowByValue(i, pivotValue, table, r, c);
         // displayTable(table, r, c);
         for(int j=0; j<r; j++){
-            if(j==i) continue;
+            if(j==i || table[j][pivotColumn]==0) continue;
             tempFloat = table[j][pivotColumn];
             reduceRowByFactor(j, i, tempFloat, table, r, c);
             // displayTable(table, r, c);
+        }
+    }
+    if(r==c){
+        int errorFlag = 0;
+        for(int i=0; i<c; i++){
+            if(table[r-1][i]!=0){
+                errorFlag=1;
+                break;
+            }
+        }
+        if(errorFlag==1){
+            cerr << "Error: Inconsistent System" << endl;
+            return SOLN_STATUS::UNSOLVED;
         }
     }
     // displayTable(table, r, c);
@@ -128,7 +135,5 @@ inline void solver(float **table, float soln[], int r, int c){
     for(int i=0; i<c;i++){
         soln[i] /= g;
     }
+    return SOLN_STATUS::SOLVED;
 }
-
-
-// NH4OH + KAlS2O8H24O12 -> AlO3H3 + N2H8SO4 + KOH + H2O
