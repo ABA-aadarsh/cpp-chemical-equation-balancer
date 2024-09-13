@@ -83,8 +83,8 @@ void compoundsList (string & expr, vector<string>& compoundsL){
         ch = expr[i];
         if(buff.empty() && isalpha(ch) && isupper(ch)){
             buff+=ch;
-        }else if(buff.empty() && ch=="e"){
-            compoundsL.push_back("electron")
+        }else if(buff.empty() && ch=='e'){
+            compoundsL.push_back("e");
         }
         else if(!buff.empty() && (isalpha(ch) || isdigit(ch) || ch=='.' || ch=='(' || ch==')' || ch=='{' || ch=='}' || ch=='+' || ch=='-')){
             buff+=ch;
@@ -110,7 +110,7 @@ void compoundTuple(string const & compd, int arr[], map<string, int> & elementMa
     char ch, temp;
     string digitBuff, elementBuff;
     int factor=1;
-    if(compd=="electron"){
+    if(compd=="e"){
         arr[elementMap["charge"]] = -1;
         return;
     }
