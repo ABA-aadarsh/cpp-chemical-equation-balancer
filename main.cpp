@@ -27,12 +27,13 @@ set<string> uniqueElements (string const & expr){
             }
             elements.insert(buff);
             i-=1;
-        }else{
-            continue;
         }
     }
     if(buff!=""){
         elements.insert(buff);
+    }
+    if(expr.find('{') && expr.find('}')){
+        elements.insert("charge");
     }
     return elements;
 }
@@ -82,7 +83,7 @@ void compoundsList (string & expr, vector<string>& compoundsL){
         ch = expr[i];
         if(buff.empty() && isalpha(ch) && isupper(ch)){
             buff+=ch;
-        }else if(!buff.empty() && (isalpha(ch) || isdigit(ch) || ch=='.' || ch=='(' || ch==')')){
+        }else if(!buff.empty() && (isalpha(ch) || isdigit(ch) || ch=='.' || ch=='(' || ch==')' || ch=='{' || ch=='}' || ch=='+' || ch=='-')){
             buff+=ch;
         }else{
             if(!buff.empty()){
@@ -103,7 +104,7 @@ void elementMapInitialise(set<string> &elementSet, map<string, int> &elementMap)
     }
 }
 void compoundTuple(string const & compd, int arr[], map<string, int> & elementMap){
-    char ch;
+    char ch, temp;
     string digitBuff, elementBuff;
     int factor=1;
     for(int i=0; i<compd.length(); i++){
@@ -145,6 +146,36 @@ void compoundTuple(string const & compd, int arr[], map<string, int> & elementMa
             }
         }else if(ch==')'){
             factor=1;
+        }else if (ch == '.'){
+            // water of crystallization
+            string tempBuff;
+            temp = compd[++i];
+            while(isdigit(temp)){
+                tempBuff += compd[i];
+                temp = compd[++i];
+            }
+            factor *= stoi(tempBuff);
+            i--;
+        }else if (ch=='{'){
+            int j = compd.find('}');
+            string tempBuff;
+            if(j==-1){
+                cerr << "Compound : " <<  compd << " has missing closing bracket '}'\n" << endl;
+                break;
+            }
+            int signFactor = 1;
+            ch = compd[++i];
+            while(i<j && (isdigit(ch) || ch=='+' || ch=='-')){
+                if(ch=='+'){
+                    signFactor=1;
+                }else if(ch=='-'){
+                    signFactor=-1;
+                }else{
+                    tempBuff+=ch;
+                }
+                ch = compd[++i];
+            }
+            arr[elementMap["charge"]] = stoi(tempBuff) * signFactor ;
         }
     }
 }
@@ -215,6 +246,7 @@ int main() {
         delete []table;
         return EXIT_FAILURE;
     }
+    cout << "Balanced Chemical Equation:\n" ;
     int counter  = 0;
     for(int i =0; i<reactants_list.size(); i++){
         cout << "("<<soln[counter] << ") " << reactants_list[i];
