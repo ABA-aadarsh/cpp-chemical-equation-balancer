@@ -27,6 +27,8 @@ set<string> uniqueElements (string const & expr){
             }
             elements.insert(buff);
             i-=1;
+        }else if (c=='e'){
+            elements.insert("charge");
         }
     }
     if(buff!=""){
@@ -57,8 +59,6 @@ int uniqueElementsCount (string & expr){
             }
             elements.insert(buff);
             i-=1;
-        }else{
-            continue;
         }
     }
     if(buff!=""){
@@ -83,7 +83,10 @@ void compoundsList (string & expr, vector<string>& compoundsL){
         ch = expr[i];
         if(buff.empty() && isalpha(ch) && isupper(ch)){
             buff+=ch;
-        }else if(!buff.empty() && (isalpha(ch) || isdigit(ch) || ch=='.' || ch=='(' || ch==')' || ch=='{' || ch=='}' || ch=='+' || ch=='-')){
+        }else if(buff.empty() && ch=="e"){
+            compoundsL.push_back("electron")
+        }
+        else if(!buff.empty() && (isalpha(ch) || isdigit(ch) || ch=='.' || ch=='(' || ch==')' || ch=='{' || ch=='}' || ch=='+' || ch=='-')){
             buff+=ch;
         }else{
             if(!buff.empty()){
@@ -107,6 +110,10 @@ void compoundTuple(string const & compd, int arr[], map<string, int> & elementMa
     char ch, temp;
     string digitBuff, elementBuff;
     int factor=1;
+    if(compd=="electron"){
+        arr[elementMap["charge"]] = -1;
+        return;
+    }
     for(int i=0; i<compd.length(); i++){
         digitBuff = "";
         elementBuff = "";
